@@ -45,13 +45,15 @@ class ImapControl
 public:
 	ImapControl() {}
 	~ImapControl() {}
-	void auth(std::string login_in, std::string password_in);
+	void Server(std::string server_in);
+	void Auth(std::string login_in, std::string password_in);
 	std::vector<std::string> list_all();
 	void view_msg(char *uid);
 	void remove_msg(char *uid);
 private:
 	char password[128];
 	char login[128];
+	char server[128];
 	std::vector<std::string> split(const std::string &text, char sep);
 };
 

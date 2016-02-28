@@ -66,7 +66,7 @@ size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
 	return realsize;
 }
       
-void ImapControl::auth(std::string login_in, std::string password_in)
+void ImapControl::Auth(std::string login_in, std::string password_in)
 {
 	memset(login,0,127);
 	strncpy(login,login_in.c_str(),127);
@@ -75,6 +75,17 @@ void ImapControl::auth(std::string login_in, std::string password_in)
 	strncpy(password,password_in.c_str(),127);
 
 }
+
+
+      
+void ImapControl::Server(std::string server_in)
+{
+	memset(server,0,127);
+	strncpy(server,server_in.c_str(),127);
+
+}
+
+
 
 std::vector<std::string> ImapControl::list_all()
 {
@@ -89,14 +100,26 @@ std::vector<std::string> ImapControl::list_all()
 	curl_global_init(CURL_GLOBAL_ALL);
 	curl_handle = curl_easy_init();
 
+	char target[256];
+	memset(target,0,255);
+	strcpy(target,server);
+	strcat(target,"/INBOX/");
 
     	curl_easy_setopt(curl_handle, CURLOPT_USERNAME, login);
     	curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
-    	curl_easy_setopt(curl_handle, CURLOPT_URL, "imaps://imap.gmail.com:993/INBOX/");
+    	curl_easy_setopt(curl_handle, CURLOPT_URL, target);
    	curl_easy_setopt(curl_handle, CURLOPT_CUSTOMREQUEST, "search all");
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
  	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10L); 
+
+#ifdef SKIP_PEER_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+#endif
+
+#ifdef SKIP_HOSTNAME_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+#endif
 
 	res = curl_easy_perform(curl_handle);
 
@@ -138,7 +161,10 @@ void ImapControl::view_msg(char *uid)
 
 	char path[256];
 	memset(path,0,255);
-	snprintf(path,255,"imaps://imap.gmail.com:993/INBOX/;UID=%s",uid);
+	char target[256];
+	memset(target,0,255);
+	strcpy(target,server);
+	snprintf(path,255,"%s/INBOX/;UID=%s",server,uid);
 
     	curl_easy_setopt(curl_handle, CURLOPT_USERNAME, login);
     	curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
@@ -146,6 +172,14 @@ void ImapControl::view_msg(char *uid)
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
  	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 3L); 
+
+#ifdef SKIP_PEER_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+#endif
+
+#ifdef SKIP_HOSTNAME_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+#endif
 	res = curl_easy_perform(curl_handle);
 
 		if(res != CURLE_OK) 
@@ -179,17 +213,28 @@ void ImapControl::remove_msg(char *uid)
 	curl_handle = curl_easy_init();
 	char cmd[64];
 	memset(cmd,0,63);
-	snprintf(cmd,63,"STORE %s +Flags \\Deleted",uid);
 
+	char target[256];
+	memset(target,0,255);
+	strcpy(target,server);
+	strcat(target,"/INBOX/");
+
+	snprintf(cmd,63,"STORE %s +Flags \\Deleted",uid);
+//imaps://imap.gmail.com:993
     	curl_easy_setopt(curl_handle, CURLOPT_USERNAME, login);
     	curl_easy_setopt(curl_handle, CURLOPT_PASSWORD, password);
-    	curl_easy_setopt(curl_handle, CURLOPT_URL, "imaps://imap.gmail.com:993/INBOX/");
+    	curl_easy_setopt(curl_handle, CURLOPT_URL, target);
    	curl_easy_setopt(curl_handle, CURLOPT_CUSTOMREQUEST, cmd);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
- 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 3L); 
+ 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 2L); 
+#ifdef SKIP_PEER_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
+#endif
 
-	res = curl_easy_perform(curl_handle);
+#ifdef SKIP_HOSTNAME_VERIFICATION
+    	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYHOST, 0L);
+#endif
 
 	res = curl_easy_perform(curl_handle);
 
