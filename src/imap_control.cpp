@@ -112,7 +112,8 @@ std::vector<std::string> ImapControl::list_all()
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
  	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10L); 
-
+// run SSL or TLS
+	curl_easy_setopt(curl_handle, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
 #ifdef SKIP_PEER_VERIFICATION
     	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
 #endif
@@ -172,7 +173,8 @@ void ImapControl::view_msg(char *uid)
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
  	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 3L); 
-
+//run ssl or tls
+	curl_easy_setopt(curl_handle, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
 #ifdef SKIP_PEER_VERIFICATION
     	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
 #endif
@@ -228,6 +230,8 @@ void ImapControl::remove_msg(char *uid)
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
 	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
  	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 2L); 
+//SSL or TLS
+	curl_easy_setopt(curl_handle, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
 #ifdef SKIP_PEER_VERIFICATION
     	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
 #endif
