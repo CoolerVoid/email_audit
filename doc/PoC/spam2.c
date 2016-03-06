@@ -1196,15 +1196,17 @@ int main()
 // open e-mail text data
     char *p = ReadLines("log1");
 
-	if(spam_points(p) >= 20) {
+	int points=spam_points(p);
+
+	if(points >= 20) {
 		puts("High level of spam rank");
 	} 
 
-	else if(spam_points(p) > 10) {
+	else if(points > 10) {
 		puts("Medium level of spam rank");
 	}
  
-	else if(spam_points(p) < 10) {
+	else if(points < 10) {
 		puts("Low level of spam rank");
 	}
 
