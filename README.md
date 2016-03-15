@@ -15,7 +15,7 @@ Todo list of tasks of this project
 * Create Naive Bayes Class - [ X ] 
 	- Test at https://github.com/CoolerVoid/libtext_bayes  
 
-* Create DFA Spam function - [ X ]  
+* Create Finite state machine to detector Spam - [ X ]  
 	- Test at path /doc/PoC'
 
 * Create Parse of Documents to validate - [  ]
