@@ -18,7 +18,7 @@ Todo list of tasks of this project
 * Create Finite state machine to detector Spam - [ X ]  
 	- Test at path /doc/PoC'
 
-* Create Parse with finite state mhchine at e-mails to validate and clear - [ X ]
+* Create Parse with finite state machine at e-mails to validate and clear - [ X ]
 
 * Blacklist validate - [ ]
 
