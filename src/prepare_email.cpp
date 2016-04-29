@@ -41,46 +41,6 @@ enum {
   WORD1,WORD2,WORD3,WORD4, END
 };
 
-
-char *ReadLines(char * NameFile)
-{
-	FILE * fh;
-	char buffer[180800];
-
-	fh = fopen(NameFile, "rb");
-
-	if( fh == NULL )
-	{
-
-		exit(-1); 	 
-		
-	}
-
-	if(fseek(fh, 0L, SEEK_END)==0)
-	{
-    		long s = ftell(fh);
-    		rewind(fh);
-
-    		if ( buffer != NULL && s < 180800 )
-    		{
-      			if(!fread(buffer, s, 1, fh))
-				puts("error \n");
-    		}
-	}
-
- 
-	if( fclose(fh) == EOF )
-	{
-
-		exit(1);
-	}
-
-	fh=NULL;
-	char *tmp=buffer;
-	
-	return tmp;
-}
-
 // DFA to parse HTML tags of e-mail
 int parse_clear(char** p, char** lex)
 {
@@ -282,11 +242,11 @@ yy30:
 }
 
 // prepare e-mail to use with any NLP algorithm
-char *prepare_text(char *filename) 
+char *prepare_text(char *email_text) 
 {
 
     char cleartext[500000];
-    char *p = ReadLines(filename);
+    char *p = email_text;
     char *last = p;
     int sz;
     int result=0;
